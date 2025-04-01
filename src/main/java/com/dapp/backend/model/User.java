@@ -4,7 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,4 +31,10 @@ public class User {
     LocalDate birthday;
     String address;
     boolean isDeleted;
+    @ManyToOne
+    @JoinColumn(name = "center_id")
+    Center center;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
 }

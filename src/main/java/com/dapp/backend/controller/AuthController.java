@@ -7,13 +7,12 @@ import com.dapp.backend.annotation.ApiMessage;
 import com.dapp.backend.exception.InvalidException;
 import com.dapp.backend.model.User;
 import com.dapp.backend.model.request.ReqUser;
-import com.dapp.backend.model.response.ResUser;
+import com.dapp.backend.model.response.ResLogin;
 import com.dapp.backend.service.AuthService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,16 +29,16 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiMessage("Login a patient")
-    public ResponseEntity<ResUser> loginUser(@RequestBody User user, HttpSession session) throws InvalidException {
+    public ResponseEntity<ResLogin> loginUser(@RequestBody User user, HttpSession session) throws InvalidException {
         session.setAttribute("walletAddress", user.getWalletAddress());
         return ResponseEntity.ok().body(authService.loginUser(user.getWalletAddress()));
     }
 
     @GetMapping("/account")
     @ApiMessage("Get a patient's profile")
-    public ResponseEntity<User> getProfile(HttpSession session) throws InvalidException {
+    public ResponseEntity<ResLogin> getProfile(HttpSession session) throws InvalidException {
         String walletAddress = (String) session.getAttribute("walletAddress");
-        return ResponseEntity.ok().body(authService.getProfile(walletAddress));
+        return ResponseEntity.ok().body(authService.loginUser(walletAddress));
     }
 
     @PostMapping("/logout")

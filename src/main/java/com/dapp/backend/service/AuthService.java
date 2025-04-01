@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import com.dapp.backend.exception.InvalidException;
 import com.dapp.backend.model.User;
 import com.dapp.backend.model.request.ReqUser;
-import com.dapp.backend.model.response.ResUser;
+import com.dapp.backend.model.response.ResLogin;
+import com.dapp.backend.repository.RoleRepository;
 import com.dapp.backend.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public User registerUser(ReqUser reqUser) throws InvalidException {
         Optional<User> existUser = userRepository.findByWalletAddress(reqUser.getWalletAddress());
@@ -27,26 +29,31 @@ public class AuthService {
         user.setWalletAddress(reqUser.getWalletAddress());
         user.setFullname(reqUser.getFullname());
         user.setEmail(reqUser.getEmail());
+        user.setPhoneNumber(reqUser.getPhoneNumber());
+        user.setBirthday(reqUser.getBirthday());
+        user.setAddress(reqUser.getAddress());
+        user.setRole(roleRepository.findByName("PATIENT"));
         return userRepository.save(user);
     }
 
-    public ResUser loginUser(String walletAddress) throws InvalidException {
-        Optional<User> user = userRepository.findByWalletAddress(walletAddress);
-        if (!user.isPresent()) {
+    public ResLogin loginUser(String walletAddress) throws InvalidException {
+        Optional<User> currentUserDB = userRepository.findByWalletAddress(walletAddress);
+        if (!currentUserDB.isPresent()) {
             throw new InvalidException("Not found user");
 
         }
-        ResUser resUser = new ResUser();
-        resUser.setUser(user.get());
-        return resUser;
-    }
+        ResLogin.UserLogin userLogin = new ResLogin.UserLogin(
+                currentUserDB.get().getWalletAddress(),
+                currentUserDB.get().getEmail(),
+                currentUserDB.get().getFullname(),
+                currentUserDB.get().getAddress(),
+                currentUserDB.get().getPhoneNumber(),
+                currentUserDB.get().getBirthday(),
+                currentUserDB.get().getCenter() == null ? null : currentUserDB.get().getCenter().getName(),
+                currentUserDB.get().getRole().getName());
 
-    public User getProfile(String walletAddress) throws InvalidException {
-        Optional<User> user = userRepository.findByWalletAddress(walletAddress);
-        if (!user.isPresent()) {
-            throw new InvalidException("Not found user");
-
-        }
-        return user.get();
+        ResLogin resLogin = new ResLogin();
+        resLogin.setUser(userLogin);
+        return resLogin;
     }
 }

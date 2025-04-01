@@ -15,5 +15,7 @@ public class ReqUser {
     String phoneNumber;
     LocalDate birthday;
     String address;
+    String centerName;
+    String roleName;
     boolean isDeleted;
 }
