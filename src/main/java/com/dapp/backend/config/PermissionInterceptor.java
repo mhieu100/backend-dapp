@@ -21,7 +21,6 @@
 
 //     @Autowired
 //     UserService userService;
-//     HttpSession session;
 
 //     @Override
 //     @Transactional
@@ -38,7 +37,14 @@
 //         System.out.println(">>> httpMethod= " + httpMethod);
 //         System.out.println(">>> requestURI= " + requestURI);
 
-//         String walletAddress = userService.getUserByWalletAddress((String) session.getAttribute("walletAddress")).isPresent() == true ? (String) session.getAttribute("walletAddress") : "";
+//         HttpSession session = request.getSession(false); // Get session if exists, don't create new one
+//         String walletAddress = "";
+
+//         if (session != null) {
+//             walletAddress = userService.getUserByWalletAddress((String) session.getAttribute("walletAddress")).isPresent() 
+//                 ? (String) session.getAttribute("walletAddress") 
+//                 : "";
+//         }
 //         if (!walletAddress.isEmpty()) {
 //             User user = this.userService.getUserByWalletAddress(walletAddress).get();
 //             if (user != null) {

@@ -37,6 +37,7 @@ public class Vaccine {
     String ageRange;
     Integer requiredDoses;
     Double price;
+    Double ethPrice;
     Integer stockQuantity;
     boolean isDeleted;
 }

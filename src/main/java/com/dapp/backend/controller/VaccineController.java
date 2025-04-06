@@ -66,10 +66,5 @@ public class VaccineController {
     public void deleteVaccine(@PathVariable Long id) throws InvalidException {
         vaccineService.deleteVaccine(id);
     }
-
-    @GetMapping("/listSearch")
-    public ResponseEntity<List<Vaccine>> getMethodName(@PathVariable("name") String name) {
-        return ResponseEntity.ok().body(vaccineService.getVaccinesByName(name));
-    }
     
 }

@@ -1,5 +1,7 @@
 package com.dapp.backend.config;
+
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,51 @@ public class DatabaseInitializer implements CommandLineRunner {
         System.out.println(">>> START INIT DATABASE");
         long countRoles = this.roleRepository.count();
         long countUsers = this.userRepository.count();
+        long countPermissions = this.permissionRepository.count();
 
-       
+        if (countPermissions == 0) {
+            ArrayList<Permission> arr = new ArrayList<>();
+            arr.add(new Permission("Get all appointments of center", "/appointments", "GET", "APPOINTMENT"));
+            arr.add(new Permission("Update a appointment of cashier", "/appointments/{id}", "PUT", "APPOINTMENT"));
+            arr.add(new Permission("Cancel a appointment", "/appointments/{id}/cancel", "PUT", "APPOINTMENT"));
+            arr.add(new Permission("Complete a appointment", "/appointments/{id}/complete", "PUT", "APPOINTMENT"));
+            arr.add(new Permission("Create a appointments with cash", "/appointments/cash", "POST", "APPOINTMENT"));
+            arr.add(new Permission("Create a appointments with credit card", "/appointments/credit-card", "POST",
+                    "APPOINTMENT"));
+            arr.add(new Permission("Update status of payment", "/appointments/update-payment", "POST", "APPOINTMENT"));
+            arr.add(new Permission("Get all appointments of doctor", "/appointments/my-schedule", "GET",
+                    "APPOINTMENT"));
+
+            arr.add(new Permission("Access profile", "/auth/account", "GET", "AUTH"));
+            arr.add(new Permission("Get all appointments of user", "/auth/my-appointments", "GET", "AUTH"));
+
+            arr.add(new Permission("Create a center", "/centers", "POST", "CENTER"));
+            arr.add(new Permission("Get a center by id", "/centers/{id}", "GET", "CENTER"));
+            arr.add(new Permission("Update a center", "/centers/{id}", "PUT", "CENTER"));
+            arr.add(new Permission("Delete a center", "/centers/{id}", "DELETE", "CENTER"));
+
+            arr.add(new Permission("Create a vaccine", "/vaccines", "POST", "VACCINE"));
+            arr.add(new Permission("Get a vaccine by id", "/vaccines/{id}", "GET", "VACCINE"));
+            arr.add(new Permission("Update a vaccine", "/vaccines/{id}", "PUT", "VACCINE"));
+            arr.add(new Permission("Delete a vaccine", "/vaccines/{id}", "DELETE", "VACCINE"));
+
+            arr.add(new Permission("Create a permission", "/permissions", "POST", "PERMISSION"));
+            arr.add(new Permission("Get all permissions", "/permissions", "GET", "PERMISSION"));
+            arr.add(new Permission("Update a permission", "/permissions", "PUT", "PERMISSION"));
+            arr.add(new Permission("Delete a permission", "/permissions/{id}", "DELETE", "PERMISSION"));
+
+            arr.add(new Permission("Update a user", "/users/{walletAddress}", "PUT", "USER"));
+            arr.add(new Permission("Delete a user", "/users/{walletAddress}", "DELETE", "USER"));
+            arr.add(new Permission("Get all users", "/users", "GET", "USER"));
+            arr.add(new Permission("Get all doctors of center", "/users/doctors", "GET", "USER"));
+
+            arr.add(new Permission("Get all roles", "/roles", "GET", "ROLE"));
+            arr.add(new Permission("Update a role", "/roles/{id}", "PUT", "ROLE"));
+
+            arr.add(new Permission("Upload a file", "/files", "GET", "FILE"));
+
+            this.permissionRepository.saveAll(arr);
+        }
 
         if (countRoles == 0) {
             Role adminRole = new Role();
@@ -56,7 +101,6 @@ public class DatabaseInitializer implements CommandLineRunner {
             }
             this.userRepository.save(adminUser);
 
-            
             User doctorHN = new User();
             doctorHN.setWalletAddress("0xCfB82b8DDDa9e286538162Ee244EADFC0c8cC17F");
             doctorHN.setEmail("hoangtd@gmail.com");
@@ -85,7 +129,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                 cashierHN.setRole(cashierRole);
             }
             this.userRepository.save(cashierHN);
-
 
             User cashierHCM = new User();
             cashierHCM.setWalletAddress("0x6E76068c73811E956BDBaA6E0E617A9Bc228b85B");

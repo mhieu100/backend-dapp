@@ -21,16 +21,14 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     @ApiMessage("Get all users")
@@ -53,14 +51,15 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAllUsers(specification, pageable));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{walletAddress}")
     @ApiMessage("Update a user")
     public ResponseEntity<ResUser> updateUser(@PathVariable String walletAddress, @Valid @RequestBody ReqUser reqUser)
             throws InvalidException {
+                System.out.println("hello");
         return ResponseEntity.ok().body(userService.updateUser(walletAddress, reqUser));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{walletAddress}")
     @ApiMessage("Delete a user")
     public void deleteUser(@PathVariable String walletAddress) throws InvalidException {
         userService.deleteUser(walletAddress);

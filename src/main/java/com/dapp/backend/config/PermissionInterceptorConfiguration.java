@@ -15,7 +15,7 @@
 //     @Override
 //     public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
 //         String[] whiteList = {
-//             "/auth/login", "/auth/register",  "/auth/logout", "/storage/**"
+//             "/auth/login", "/auth/register",  "/auth/logout", "/storage/**", "/vaccines/**", "/centers/**"
 //     };
 //         registry.addInterceptor(getPermissionInterceptor())
 //                 .excludePathPatterns(whiteList);
