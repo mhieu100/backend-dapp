@@ -52,11 +52,11 @@ public class AuthController {
     @GetMapping("/my-appointments")
     @ApiMessage("Get all appointments of patient")
     public ResponseEntity<List<AppointmentDto>> getAllAppointmentsOfUser(HttpSession session) throws Exception {
-                String walletAddress = (String) session.getAttribute("walletAddress");
+        String walletAddress = (String) session.getAttribute("walletAddress");
         List<Appointment> appointments = appointmentService.getAppointmentsByPatient(walletAddress);
         List<AppointmentDto> dtos = appointments.stream()
-                        .map(AppointmentMapper::toDto)
-                        .collect(Collectors.toList());
+                .map(AppointmentMapper::toDto)
+                .collect(Collectors.toList());
         return ResponseEntity.ok().body(dtos);
     }
 

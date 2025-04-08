@@ -2,8 +2,8 @@ package com.dapp.backend.service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigInteger;
 import java.util.List;
-
 
 import org.springframework.stereotype.Service;
 import org.web3j.model.VaccineAppointment;
@@ -23,7 +23,6 @@ public class AppointmentService {
     private final VaccineRepository vaccineRepository;
     private final CenterRepository centerRepository;
     private final VaccineAppointment contract;
-    
 
     public String createAppointmentWithMetaMark(ReqAppointment reqAppointment, String walletAddress) throws Exception {
         Vaccine vaccine = vaccineRepository.findById(reqAppointment.getVaccineId()).get();
@@ -43,6 +42,15 @@ public class AppointmentService {
 
     public List<Appointment> getAppointmentsByPatient(String patientAddress) throws Exception {
         return contract.getAppointmentsByPatient(patientAddress).send();
+    }
+
+    public String processAppointment(
+            BigInteger appointmentId,
+            String doctorAddress,
+            String cashierAddress) throws Exception {
+        TransactionReceipt receipt = contract.processAppointment(appointmentId, doctorAddress, cashierAddress).send();
+        return "Appointment processed. Transaction hash: " +
+                receipt.getTransactionHash();
     }
 
     // public ResAppointment convertToAppointment(VaccineAppointment.Appointment
@@ -249,30 +257,16 @@ public class AppointmentService {
     // return convertToReqAppointment(appointment);
     // }
 
-    // public ResAppointment cancelAppointment(String id) {
-    // Appointment appointment =
-    // appointmentRepository.findById(Long.parseLong(id)).get();
-    // appointment.setStatus(Status.CANCELLED);
-    // Payment payment = this.paymentRepository.findByAppointment(appointment);
-    // payment.setStatus(Payment.PaymentStatus.FAILED);
-    // payment.setPaymentDate(LocalDate.now());
-    // this.paymentRepository.save(payment);
-    // this.appointmentRepository.save(appointment);
-    // return convertToReqAppointment(appointment);
-    // }
+    public String completeAppointment(BigInteger id) throws Exception {
+        TransactionReceipt receipt = contract.completeAppointment(id).send();
+        return "Appointment completed. Transaction hash: " +
+                receipt.getTransactionHash();
+    }
 
-    // public ResAppointment completeAppointment(String id) {
-    // Appointment appointment =
-    // appointmentRepository.findById(Long.parseLong(id)).get();
-    // appointment.setStatus(Status.COMPLETED);
-    // Payment payment = this.paymentRepository.findByAppointment(appointment);
-    // if (payment.getPaymentMethod().equals(Payment.PaymentMethod.CASH)) {
-    // payment.setStatus(Payment.PaymentStatus.COMPLETED);
-    // payment.setPaymentDate(LocalDate.now());
-    // }
-    // this.paymentRepository.save(payment);
-    // this.appointmentRepository.save(appointment);
-    // return convertToReqAppointment(appointment);
-    // }
+    public String cancelAppointment(BigInteger id) throws Exception {
+        TransactionReceipt receipt = contract.cancelAppointment(id).send();
+        return "Appointment cancelled. Transaction hash: " +
+                receipt.getTransactionHash();
+    }
 
 }

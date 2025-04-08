@@ -11,4 +11,6 @@ public class ReqAppointment {
     private long vaccineId;
     private LocalDate date;
     private LocalTime time;
+    
+   
 }
